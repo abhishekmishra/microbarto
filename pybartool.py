@@ -1,5 +1,9 @@
 import yaml
 import PySimpleGUI as sg
+import os, os.path
+from pathlib import Path
+
+load_default_always = False
 
 default_toolbar_cfg = """
     toolbar:
@@ -8,23 +12,46 @@ default_toolbar_cfg = """
             y: 100
         orientation: horizontal
         items:
-            - name: btn1
-              image: btn1.jpg
-              type: button
-              action: explorer.exe
-              action_type: command
+            btn1:
+                name: file manager
+                image: btn1.jpg
+                type: button
+                action: explorer.exe
+                action_type: command
+            btn2:
+                name: open blah.txt
+                image: btn2.jpg
+                type: button
+                action: blah.txt
+                action_type: file
 """
 
-tbcfg = yaml.load(default_toolbar_cfg, Loader=yaml.Loader)
-print(tbcfg)
+home = str(Path.home())
+# print ('user home folder is ' + home)
+pybartool_cfg_path = os.path.join(home, '.pybartool')
 
-print(yaml.dump(tbcfg))
+if not load_default_always and os.path.exists(pybartool_cfg_path):
+    print(pybartool_cfg_path + ' exists.')
+    with open(pybartool_cfg_path, "r") as stream:
+        try:
+            tbcfg = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+else:
+    print(pybartool_cfg_path + ' doesn\'t exist, loading default.')
+    tbcfg = yaml.load(default_toolbar_cfg, Loader=yaml.Loader)
+
+print(tbcfg)
+# print(yaml.dump(tbcfg))
 
 layout = [
     [sg.Button('Close')]
 ]
-for item in tbcfg['toolbar']['items']:
-    layout.insert(0, [sg.Button(item['name'])])
+
+items = tbcfg['toolbar']['items']
+for item_name in items:
+    item = items[item_name]
+    layout.insert(0, [sg.Button(item['name'], k=item_name)])
 
 # Create the Window
 window = sg.Window(
@@ -32,7 +59,8 @@ window = sg.Window(
     layout,
     no_titlebar=True,
     grab_anywhere=True,
-    location=(tbcfg['toolbar']['location']['x'], tbcfg['toolbar']['location']['y']),
+    location=(tbcfg['toolbar']['location']['x'],
+              tbcfg['toolbar']['location']['y']),
     keep_on_top=True
 )
 # Event Loop to process "events" and get the "values" of the inputs
@@ -40,5 +68,16 @@ while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED or event == 'Close':  # if user closes window or clicks cancel
         break
+    print(event)
+    if event in items:
+        print(event + ' is a toolbar button.')
+        item = items[event]
+        if item["action_type"] == "command":
+            os.system(item["action"])
+        if item["action_type"] == "file":
+            try:
+                os.startfile(item["action"])
+            except FileNotFoundError as fnfe:
+                sg.popup_error("File could not be found: " + fnfe.filename)
 
 window.close()
