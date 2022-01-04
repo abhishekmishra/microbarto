@@ -65,6 +65,8 @@ window = sg.Window(
     grab_anywhere=True,
     location=(tbcfg['toolbar']['location']['x'],
               tbcfg['toolbar']['location']['y']),
+    margins=(5, 0),
+    element_padding=(0, 0),
     keep_on_top=True
 )
 # Event Loop to process "events" and get the "values" of the inputs
