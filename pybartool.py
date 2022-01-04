@@ -51,7 +51,11 @@ layout = [
 items = tbcfg['toolbar']['items']
 for item_name in items:
     item = items[item_name]
-    layout.insert(0, [sg.Button(item['name'], k=item_name)])
+    b = sg.Button(item['name'], k=item_name)
+    if tbcfg['toolbar']['orientation'] == 'horizontal':
+        layout[0].insert(0, b)
+    else:
+        layout.insert(0, [b])
 
 # Create the Window
 window = sg.Window(
