@@ -5,6 +5,9 @@ from pathlib import Path
 
 load_default_always = False
 
+#TODO: load theme from config
+sg.theme('DarkBrown4')
+
 default_toolbar_cfg = """
     toolbar:
         location:
