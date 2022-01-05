@@ -1,3 +1,34 @@
+"""
+microbarto.py
+
+Date: 05/Jan/2022
+Author: Abhishek Mishra <abhishekmishra3@gmail.com>
+
+A simple toolbar application for the desktop built using
+the excellent PySimpleGUI library.
+
+(c) 2022 Abhishek Mishra, License GPLv3
+
+This program is free software: you can redistribute it
+and/or modify it under the terms of the GNU General 
+Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at 
+your option) any later version.
+
+This program is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the 
+implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public 
+License for more details.
+
+You should have received a copy of the GNU General Public
+License along with this program. 
+If not, see <https://www.gnu.org/licenses/>.
+"""
+
+__version__ = "0.0.1a0"
+__author__ = "Abhishek Mishra"
+
 import yaml
 import PySimpleGUI as sg
 import os
@@ -6,7 +37,7 @@ from functools import partial
 
 PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
 PROGRAM_NAME = "MicroBarto"
-PROGRAM_VERSION = "0.0.1a"
+PROGRAM_VERSION = __version__
 PROGRAM_DESCRIPTION = "{} {}: Configurable toolbar for the desktop".format(
     PROGRAM_NAME, PROGRAM_VERSION
 )
@@ -39,7 +70,7 @@ home = str(Path.home())
 microbarto_cfg_path = os.path.join(home, ".microbarto")
 
 if not load_default_always and os.path.exists(microbarto_cfg_path):
-    print(microbarto_cfg_path + " exists.")
+    # print(microbarto_cfg_path + " exists.")
     with open(microbarto_cfg_path, "r") as stream:
         try:
             tbcfg = yaml.safe_load(stream)
@@ -143,31 +174,31 @@ def mouse_oob():
     else:
         return True
 
+if __name__ == "__main__":
+    while True:
+        event, values = window.read()
+        if event in (sg.WIN_CLOSED, "Close", "Exit"):
+            break
+        if event == "About MicroBarto":
+            sg.popup_ok(
+                PROGRAM_DESCRIPTION,
+                title="About " + PROGRAM_NAME + " " + PROGRAM_VERSION,
+            )
+        if event == "+MOUSE OVER+" and window.size != window_size:
+            window.size = window_size
+        if event == "+MOUSE AWAY+" and window.size != hidden_window_size:
+            if mouse_oob():
+                window.size = hidden_window_size
+        if event == "MicroBartoWebsite":
+            os.startfile(PROJECT_HOME)
+        if event in items:
+            item = items[event]
+            if item["action_type"] == "command":
+                os.system(item["action"])
+            if item["action_type"] == "file":
+                try:
+                    os.startfile(item["action"])
+                except FileNotFoundError as fnfe:
+                    sg.popup_error("File could not be found: " + fnfe.filename)
 
-while True:
-    event, values = window.read()
-    if event in (sg.WIN_CLOSED, "Close", "Exit"):
-        break
-    if event == "About MicroBarto":
-        sg.popup_ok(
-            PROGRAM_DESCRIPTION,
-            title="About " + PROGRAM_NAME + " " + PROGRAM_VERSION,
-        )
-    if event == "+MOUSE OVER+" and window.size != window_size:
-        window.size = window_size
-    if event == "+MOUSE AWAY+" and window.size != hidden_window_size:
-        if mouse_oob():
-            window.size = hidden_window_size
-    if event == "MicroBartoWebsite":
-        os.startfile(PROJECT_HOME)
-    if event in items:
-        item = items[event]
-        if item["action_type"] == "command":
-            os.system(item["action"])
-        if item["action_type"] == "file":
-            try:
-                os.startfile(item["action"])
-            except FileNotFoundError as fnfe:
-                sg.popup_error("File could not be found: " + fnfe.filename)
-
-window.close()
+    window.close()

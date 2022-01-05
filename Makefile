@@ -1,5 +1,5 @@
 PROGRAM_NAME=		MicroBarTo
-VERSION= 			0.0.1a
+VERSION= 			$(shell python -c "import microbarto; print(microbarto.__version__)")
 DATETIME?=			$(shell date +'%y%m%d-%H%M%S')
 BUILD_EXEFILE=		$(PROGRAM_NAME)-$(VERSION)-$(DATETIME).exe
 RELEASE_EXEFILE=	$(PROGRAM_NAME)-$(VERSION).exe
@@ -28,5 +28,8 @@ clean:
 	rm -r -f dist
 	rm -r -f build
 	rm -f *.spec
+
+version:
+	echo $(VERSION)
 
 .PHONY:	venv exe pkgs
