@@ -29,17 +29,17 @@ default_toolbar_cfg = """
 
 home = str(Path.home())
 # print ('user home folder is ' + home)
-pybartool_cfg_path = os.path.join(home, ".pybartool")
+microbarto_cfg_path = os.path.join(home, ".microbarto")
 
-if not load_default_always and os.path.exists(pybartool_cfg_path):
-    print(pybartool_cfg_path + " exists.")
-    with open(pybartool_cfg_path, "r") as stream:
+if not load_default_always and os.path.exists(microbarto_cfg_path):
+    print(microbarto_cfg_path + " exists.")
+    with open(microbarto_cfg_path, "r") as stream:
         try:
             tbcfg = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
 else:
-    print(pybartool_cfg_path + " doesn't exist, loading default.")
+    print(microbarto_cfg_path + " doesn't exist, loading default.")
     tbcfg = yaml.load(default_toolbar_cfg, Loader=yaml.Loader)
 
 # print(yaml.dump(tbcfg))
@@ -85,7 +85,7 @@ for item_name in items:
 
 # Create the Window
 window = sg.Window(
-    "pybartool",
+    "microbarto",
     layout,
     no_titlebar=True,
     grab_anywhere=True,
