@@ -146,11 +146,6 @@ window = sg.Window(
     "microbarto",
     layout,
     no_titlebar=True,
-    # grab_anywhere=True,
-    # location=(
-    #     tbcfg["toolbar"]["location"]["x"],
-    #     tbcfg["toolbar"]["location"]["y"],
-    # ),
     margins=(0, 0),
     element_padding=(0, 0),
     finalize=True,
@@ -160,7 +155,6 @@ window = sg.Window(
 
 window.bind("<Enter>", "+MOUSE OVER+")
 window.bind("<Leave>", "+MOUSE AWAY+")
-
 
 window_size = window.size
 hidden_window_size = (window_size[0], 2)
