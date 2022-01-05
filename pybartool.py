@@ -2,11 +2,9 @@ import yaml
 import PySimpleGUI as sg
 import os, os.path
 from pathlib import Path
+from functools import partial
 
 load_default_always = False
-
-#TODO: load theme from config
-sg.theme('DarkBrown4')
 
 default_toolbar_cfg = """
     toolbar:
@@ -44,17 +42,48 @@ else:
     print(pybartool_cfg_path + ' doesn\'t exist, loading default.')
     tbcfg = yaml.load(default_toolbar_cfg, Loader=yaml.Loader)
 
-print(tbcfg)
 # print(yaml.dump(tbcfg))
 
+# Default configurations
+tb_theme = "DarkBrown4"
+
+tbfont_family = "Helvetica"
+tbfont_size = 14
+tbfont_styles = ""
+
+if 'theme' in tbcfg['toolbar']:
+    tb_theme = tbcfg['toolbar']['theme']
+
+if 'font' in tbcfg['toolbar']:
+    if 'family' in tbcfg['toolbar']['font']:
+        tbfont_family = tbcfg['toolbar']['font']['family']
+    if 'size' in tbcfg['toolbar']['font']:
+        tbfont_size = tbcfg['toolbar']['font']['size']
+    if 'styles' in tbcfg['toolbar']['font']:
+        tbfont_styles = tbcfg['toolbar']['font']['styles']
+
+# Set the pysimplegui theme to use
+sg.theme(tb_theme)
+
+# create the font object
+tbfont = (
+    tbfont_family,
+    tbfont_size,
+    tbfont_styles
+)
+
+# create a TBButton class which has the common config for the 
+# toolbar buttons.
+TBButton = partial(sg.Button, font=tbfont)
+
 layout = [
-    [sg.Button('Close')]
+    [TBButton('X', k='Close', pad=((10, 0), (0, 0)))]
 ]
 
 items = tbcfg['toolbar']['items']
 for item_name in items:
     item = items[item_name]
-    b = sg.Button(item['name'], k=item_name)
+    b = TBButton(item['name'], k=item_name)
     if tbcfg['toolbar']['orientation'] == 'horizontal':
         layout[0].insert(0, b)
     else:
