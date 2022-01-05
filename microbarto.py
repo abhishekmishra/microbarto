@@ -38,8 +38,13 @@ from functools import partial
 PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
 PROGRAM_NAME = "MicroBarto"
 PROGRAM_VERSION = __version__
-PROGRAM_DESCRIPTION = "{} {}: Configurable toolbar for the desktop".format(
-    PROGRAM_NAME, PROGRAM_VERSION
+PROGRAM_DESCRIPTION = """
+{} {}: Configurable toolbar for the desktop.
+
+(c) 2022 {}
+License: GPLv3
+""".format(
+    PROGRAM_NAME, PROGRAM_VERSION, __author__
 )
 
 load_default_always = False
@@ -173,6 +178,7 @@ def mouse_oob():
         return False
     else:
         return True
+
 
 if __name__ == "__main__":
     while True:
