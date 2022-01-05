@@ -108,7 +108,7 @@ tbfont = (tbfont_family, tbfont_size, tbfont_styles)
 
 # create a TBButton class which has the common config for the
 # toolbar buttons.
-TBButton = partial(sg.Button, font=tbfont)
+TBButton = partial(sg.Button, font=tbfont, pad=((0, 0), (0, 0)))
 
 layout = []
 
@@ -122,8 +122,8 @@ def add_tb_button(btn):
         layout.insert(0, [btn])
 
 
-add_tb_button(TBButton("✕", k="Close", pad=((10, 0), (0, 0))))
-add_tb_button(TBButton("🏠", k="MicroBartoWebsite", pad=((10, 0), (0, 0))))
+add_tb_button(TBButton("✕", k="Close", pad=((0, 0), (0, 0))))
+add_tb_button(TBButton("🏠", k="MicroBartoWebsite", pad=((1, 0), (0, 0))))
 
 items = tbcfg["toolbar"]["items"]
 for item_name in items:
@@ -139,12 +139,12 @@ window = sg.Window(
     "microbarto",
     layout,
     no_titlebar=True,
-    grab_anywhere=True,
+    # grab_anywhere=True,
     location=(
         tbcfg["toolbar"]["location"]["x"],
         tbcfg["toolbar"]["location"]["y"],
     ),
-    margins=(5, 0),
+    margins=(0, 0),
     element_padding=(0, 0),
     finalize=True,
     keep_on_top=True,
