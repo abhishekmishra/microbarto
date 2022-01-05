@@ -13,7 +13,7 @@ continuous:
 	pyinstaller --onefile microbarto.py --name $(BUILD_EXEFILE)
 
 release:	exe
-	pyinstaller --windowed --onefile microbarto.py --name $(RELEASE_EXEFILE)
+	pyinstaller --windowed --icon microbarto.ico --onefile microbarto.py --name $(RELEASE_EXEFILE)
 
 run:	exe
 	./dist/microbarto
