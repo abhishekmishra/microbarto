@@ -34,6 +34,7 @@ import PySimpleGUI as sg
 import os
 from pathlib import Path
 from functools import partial
+import subprocess
 
 PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
 PROGRAM_NAME = "MicroBarto"
@@ -200,7 +201,7 @@ if __name__ == "__main__":
         if event in items:
             item = items[event]
             if item["action_type"] == "command":
-                os.system(item["action"])
+                subprocess.call([item["action"]])
             if item["action_type"] == "file":
                 try:
                     os.startfile(item["action"])
