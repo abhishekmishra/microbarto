@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 microbarto.py
 
@@ -83,7 +85,7 @@ if not load_default_always and os.path.exists(microbarto_cfg_path):
         except yaml.YAMLError as exc:
             print(exc)
 else:
-    print(microbarto_cfg_path + " doesn't exist, loading default.")
+    #print(microbarto_cfg_path + " doesn't exist, loading default.")
     tbcfg = yaml.load(default_toolbar_cfg, Loader=yaml.Loader)
 
 # print(yaml.dump(tbcfg))
