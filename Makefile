@@ -5,12 +5,11 @@ BUILD_EXEFILE=		$(PROGRAM_NAME)-$(VERSION)-$(DATETIME).exe
 RELEASE_EXEFILE=	$(PROGRAM_NAME)-$(VERSION).exe
 
 all:	release
-	echo ${DATETIME}
 
 pkgs:
 	pip install -r requirements.txt
 
-continuous: 
+continuous:
 	pyinstaller --onefile microbarto.py --name $(BUILD_EXEFILE)
 
 release:	exe
