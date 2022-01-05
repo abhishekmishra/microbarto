@@ -39,7 +39,7 @@ from functools import partial
 import subprocess
 
 PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
-PROGRAM_NAME = "MicroBarto"
+PROGRAM_NAME = "MicroBarTo"
 PROGRAM_VERSION = __version__
 PROGRAM_DESCRIPTION = """
 {} {}: Configurable toolbar for the desktop.
@@ -94,6 +94,8 @@ tbfont_family = "Helvetica"
 tbfont_size = 14
 tbfont_styles = ""
 
+tborientation = "horizontal"
+
 if "theme" in tbcfg["toolbar"]:
     tb_theme = tbcfg["toolbar"]["theme"]
 
@@ -119,7 +121,7 @@ layout = []
 
 
 def add_tb_button(btn):
-    if tbcfg["toolbar"]["orientation"] == "horizontal":
+    if tborientation == "horizontal":
         if len(layout) == 0:
             layout.append([])
         layout[0].insert(0, btn)
@@ -134,7 +136,7 @@ items = tbcfg["toolbar"]["items"]
 for item_name in items:
     item = items[item_name]
     b = TBButton(item["name"], k=item_name)
-    if tbcfg["toolbar"]["orientation"] == "horizontal":
+    if tborientation == "horizontal":
         layout[0].insert(0, b)
     else:
         layout.insert(0, [b])
@@ -153,7 +155,7 @@ window = sg.Window(
     element_padding=(0, 0),
     finalize=True,
     keep_on_top=True,
-    right_click_menu=["ignored", ["---", "About MicroBarto", "Exit"]],
+    right_click_menu=["ignored", ["---", "About MicroBarTo", "Exit"]],
 )
 
 window.bind("<Enter>", "+MOUSE OVER+")
@@ -200,7 +202,7 @@ if __name__ == "__main__":
         event, values = window.read()
         if event in (sg.WIN_CLOSED, "Close", "Exit"):
             break
-        if event == "About MicroBarto":
+        if event == "About MicroBarTo":
             sg.popup_ok(
                 PROGRAM_DESCRIPTION,
                 title="About " + PROGRAM_NAME + " " + PROGRAM_VERSION,
