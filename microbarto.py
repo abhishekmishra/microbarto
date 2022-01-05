@@ -82,7 +82,7 @@ if not load_default_always and os.path.exists(microbarto_cfg_path):
         except yaml.YAMLError as exc:
             print(exc)
 else:
-    #print(microbarto_cfg_path + " doesn't exist, loading default.")
+    # print(microbarto_cfg_path + " doesn't exist, loading default.")
     tbcfg = yaml.load(default_toolbar_cfg, Loader=yaml.Loader)
 
 # print(yaml.dump(tbcfg))
@@ -145,10 +145,10 @@ window = sg.Window(
     layout,
     no_titlebar=True,
     # grab_anywhere=True,
-    location=(
-        tbcfg["toolbar"]["location"]["x"],
-        tbcfg["toolbar"]["location"]["y"],
-    ),
+    # location=(
+    #     tbcfg["toolbar"]["location"]["x"],
+    #     tbcfg["toolbar"]["location"]["y"],
+    # ),
     margins=(0, 0),
     element_padding=(0, 0),
     finalize=True,
@@ -159,8 +159,23 @@ window = sg.Window(
 window.bind("<Enter>", "+MOUSE OVER+")
 window.bind("<Leave>", "+MOUSE AWAY+")
 
+
 window_size = window.size
 hidden_window_size = (window_size[0], 2)
+
+screen_dim = window.get_screen_dimensions()
+scr_width = screen_dim[0]
+scr_height = screen_dim[1]
+
+# set the location of the toolbar based on the anchor position
+# only north supported right now
+if tbcfg["toolbar"]["anchor"] == "n":
+    width = window_size[0]
+    locx = int((scr_width - width) / 2)
+    # print(locx)
+    window.move(x=locx, y=0)
+
+# start the window hidden (tiny height)
 window.size = hidden_window_size
 
 
