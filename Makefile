@@ -9,6 +9,12 @@ exe:
 run:	exe
 	./dist/pybartool
 
+lint:
+	flake8 pybartool.py
+
+format:
+	black pybartool.py
+
 clean:
 	rm -r -f dist
 	rm -r -f build
