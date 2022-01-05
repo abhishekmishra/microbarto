@@ -4,6 +4,13 @@ import os
 from pathlib import Path
 from functools import partial
 
+PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
+PROGRAM_NAME = "MicroBarto"
+PROGRAM_VERSION = "0.0.1a"
+PROGRAM_DESCRIPTION = "{} {}: Configurable toolbar for the desktop".format(
+    PROGRAM_NAME, PROGRAM_VERSION
+)
+
 load_default_always = False
 
 default_toolbar_cfg = """
@@ -72,7 +79,20 @@ tbfont = (tbfont_family, tbfont_size, tbfont_styles)
 # toolbar buttons.
 TBButton = partial(sg.Button, font=tbfont)
 
-layout = [[TBButton("X", k="Close", pad=((10, 0), (0, 0)))]]
+layout = []
+
+
+def add_tb_button(btn):
+    if tbcfg["toolbar"]["orientation"] == "horizontal":
+        if len(layout) == 0:
+            layout.append([])
+        layout[0].insert(0, btn)
+    else:
+        layout.insert(0, [btn])
+
+
+add_tb_button(TBButton("✕", k="Close", pad=((10, 0), (0, 0))))
+add_tb_button(TBButton("🏠", k="MicroBartoWebsite", pad=((10, 0), (0, 0))))
 
 items = tbcfg["toolbar"]["items"]
 for item_name in items:
@@ -95,15 +115,51 @@ window = sg.Window(
     ),
     margins=(5, 0),
     element_padding=(0, 0),
+    finalize=True,
     keep_on_top=True,
+    right_click_menu=["ignored", ["---", "About MicroBarto", "Exit"]],
 )
-# Event Loop to process "events" and get the "values" of the inputs
+
+window.bind("<Enter>", "+MOUSE OVER+")
+window.bind("<Leave>", "+MOUSE AWAY+")
+
+window_size = window.size
+hidden_window_size = (window_size[0], 2)
+window.size = hidden_window_size
+
+
+def mouse_oob():
+    """
+    Checks if the mouse location is within pad pixels of the window
+    on the y-axis. If it is then it is not yet out of bounds.
+    This allows some delay in hiding based on mouse away.
+    """
+    pad = 3
+    loc = window.current_location()
+    sz = window.size
+    mloc = window.mouse_location()
+    if (loc[1] - pad) < mloc[1] and (loc[1] + sz[1] + pad) > mloc[1]:
+        return False
+    else:
+        return True
+
+
 while True:
     event, values = window.read()
-    if (
-        event == sg.WIN_CLOSED or event == "Close"
-    ):  # if user closes window or clicks cancel
+    if event in (sg.WIN_CLOSED, "Close", "Exit"):
         break
+    if event == "About MicroBarto":
+        sg.popup_ok(
+            PROGRAM_DESCRIPTION,
+            title="About " + PROGRAM_NAME + " " + PROGRAM_VERSION,
+        )
+    if event == "+MOUSE OVER+" and window.size != window_size:
+        window.size = window_size
+    if event == "+MOUSE AWAY+" and window.size != hidden_window_size:
+        if mouse_oob():
+            window.size = hidden_window_size
+    if event == "MicroBartoWebsite":
+        os.startfile(PROJECT_HOME)
     if event in items:
         item = items[event]
         if item["action_type"] == "command":
