@@ -104,9 +104,7 @@ while True:
         event == sg.WIN_CLOSED or event == "Close"
     ):  # if user closes window or clicks cancel
         break
-    print(event)
     if event in items:
-        print(event + " is a toolbar button.")
         item = items[event]
         if item["action_type"] == "command":
             os.system(item["action"])
