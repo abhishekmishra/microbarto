@@ -54,10 +54,7 @@ load_default_always = False
 
 default_toolbar_cfg = """
     toolbar:
-        location:
-            x: 100
-            y: 100
-        orientation: horizontal
+        anchor: n
         items:
             btn1:
                 name: file manager
