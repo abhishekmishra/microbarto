@@ -135,11 +135,20 @@ add_tb_button(TBButton("🏠", k="MicroBartoWebsite", pad=((1, 0), (0, 0))))
 items = tbcfg["toolbar"]["items"]
 for item_name in items:
     item = items[item_name]
-    b = TBButton(item["name"], k=item_name)
-    if tborientation == "horizontal":
-        layout[0].insert(0, b)
-    else:
-        layout.insert(0, [b])
+    if item['type'] == 'button':
+        item_display_name = item['name']
+        if item['action_type'] == 'file':
+            item_display_name = '\N{page facing up}' + item["name"]
+        if item['action_type'] == 'url':
+            item_display_name = '🔗' + item["name"]
+        if item['action_type'] == 'command':
+            item_display_name = '\N{desktop computer}' + item["name"]
+        
+        b = TBButton(item_display_name, k=item_name)
+        if tborientation == "horizontal":
+            layout[0].insert(0, b)
+        else:
+            layout.insert(0, [b])
 
 # Create the Window
 window = sg.Window(
@@ -212,7 +221,7 @@ if __name__ == "__main__":
             item = items[event]
             if item["action_type"] == "command":
                 subprocess.call([item["action"]])
-            if item["action_type"] == "file":
+            if item["action_type"] in ("file", "url") :
                 try:
                     os.startfile(item["action"])
                 except FileNotFoundError as fnfe:
