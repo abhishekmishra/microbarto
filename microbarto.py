@@ -39,7 +39,7 @@ from functools import partial
 import subprocess
 
 PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
-PROGRAM_NAME = "MicroBarTo(माईक्रोबार्टो)"
+PROGRAM_NAME = "MicroBarTo(माइक्रोबार्टो)"
 PROGRAM_VERSION = __version__
 PROGRAM_DESCRIPTION = """
 {} {}: Configurable toolbar for the desktop.
