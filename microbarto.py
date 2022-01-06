@@ -53,21 +53,22 @@ License: GPLv3
 load_default_always = False
 
 default_toolbar_cfg = """
-    toolbar:
-        anchor: n
-        items:
-            btn1:
-                name: file manager
-                image: btn1.jpg
-                type: button
-                action: explorer.exe
-                action_type: command
-            btn2:
-                name: open blah.txt
-                image: btn2.jpg
-                type: button
-                action: blah.txt
-                action_type: file
+    microbarto:
+        toolbar:
+            anchor: n
+            items:
+                btn1:
+                    name: file manager
+                    image: btn1.jpg
+                    type: button
+                    action: explorer.exe
+                    action_type: command
+                btn2:
+                    name: open blah.txt
+                    image: btn2.jpg
+                    type: button
+                    action: blah.txt
+                    action_type: file
 """
 
 home = str(Path.home())
@@ -87,6 +88,17 @@ else:
 
 # print(yaml.dump(tbcfg))
 
+def run_script(script_cfg):
+    script_name = script_cfg['name']
+    script_prog = [script_cfg['command']]
+    for arg in script_cfg['args']:
+        script_prog.append(arg)
+    res = subprocess.run(script_prog, stdout=subprocess.PIPE)
+    if res.returncode == 0:
+        return yaml.load(res.stdout.decode('utf-8'), Loader=yaml.Loader)
+    else:
+        return None
+
 # Default configurations
 tb_theme = "DarkBrown4"
 
@@ -95,6 +107,13 @@ tbfont_size = 14
 tbfont_styles = ""
 
 tborientation = "horizontal"
+
+tbcfg = tbcfg['microbarto']
+if "script" in tbcfg:
+    # print(tbcfg["script"])
+    script_out = run_script(tbcfg["script"])
+    for k in script_out.keys():
+        tbcfg[k] = script_out[k]
 
 if "theme" in tbcfg["toolbar"]:
     tb_theme = tbcfg["toolbar"]["theme"]
