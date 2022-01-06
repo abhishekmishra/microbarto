@@ -39,7 +39,7 @@ from functools import partial
 import subprocess
 
 PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
-PROGRAM_NAME = "MicroBarTo"
+PROGRAM_NAME = "MicroBarTo(माईक्रोबार्टो)"
 PROGRAM_VERSION = __version__
 PROGRAM_DESCRIPTION = """
 {} {}: Configurable toolbar for the desktop.
@@ -76,7 +76,7 @@ microbarto_cfg_path = os.path.join(home, ".microbarto")
 
 if not load_default_always and os.path.exists(microbarto_cfg_path):
     # print(microbarto_cfg_path + " exists.")
-    with open(microbarto_cfg_path, "r") as stream:
+    with open(microbarto_cfg_path, "rt", encoding='utf-8') as stream:
         try:
             tbcfg = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
