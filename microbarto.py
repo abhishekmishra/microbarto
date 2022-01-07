@@ -94,7 +94,10 @@ def run_script(script_cfg):
     script_prog = [script_cfg["command"]]
     for arg in script_cfg["args"]:
         script_prog.append(arg)
-    res = subprocess.run(script_prog, stdout=subprocess.PIPE)
+    # see https://stackoverflow.com/a/40108817/9483968
+    # based on which stdin AND stderr are set, to fix the error
+    # when running this program from the built executable
+    res = subprocess.run(script_prog, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
     if res.returncode == 0:
         return yaml.load(res.stdout.decode("utf-8"), Loader=yaml.Loader)
     else:
