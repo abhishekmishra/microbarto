@@ -3,3 +3,4 @@ pysimplegui
 pyinstaller
 flake8
 black
+lupa

@@ -37,6 +37,7 @@ import os
 from pathlib import Path
 from functools import partial
 import subprocess
+import lupa
 
 PROJECT_HOME = "https://github.com/abhishekmishra/microbarto"
 PROGRAM_NAME = "MicroBarTo(माइक्रोबार्टो)"
@@ -49,6 +50,8 @@ License: GPLv3
 """.format(
     PROGRAM_NAME, PROGRAM_VERSION, __author__
 )
+
+lua = lupa.LuaRuntime(unpack_returned_tuples=True)
 
 load_default_always = False
 
