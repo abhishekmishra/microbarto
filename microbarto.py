@@ -143,6 +143,7 @@ def create_layout():
     # create a TBButton class which has the common config for the
     # toolbar buttons.
     TBButton = partial(sg.Button, font=tbfont, pad=((0, 0), (0, 0)))
+    TBButtonMenu = partial(sg.ButtonMenu, font=tbfont, pad=((0, 0), (0, 0)))
 
     layout = []
 
@@ -174,6 +175,23 @@ def create_layout():
                 layout[0].insert(0, b)
             else:
                 layout.insert(0, [b])
+        if item["type"] == "buttonmenu":
+            item_display_name = item["name"]
+            menuCfg = ["bm", []]
+            bm_items = item["items"]
+            for bm_item_name in bm_items:
+                # print(bm_item_name)
+                bm_item = bm_items[bm_item_name]
+                bm_item_menuentry = bm_item["name"] + "::" + bm_item_name
+                # print (bm_item)
+                print (bm_item_menuentry)
+                menuCfg[1].append(bm_item_menuentry)
+            print(menuCfg)
+            bm = TBButtonMenu(item_display_name, menuCfg, k=item_name)
+            if tborientation == "horizontal":
+                layout[0].insert(0, bm)
+            else:
+                layout.insert(0, [bm])
     return layout, tbcfg
 
 
@@ -231,6 +249,8 @@ if __name__ == "__main__":
 
     while True:
         event, values = window.read()
+        print(event)
+        print(values)
         if event in (sg.WIN_CLOSED, "Close", "Exit"):
             break
         if event == "About MicroBarTo":
@@ -247,12 +267,24 @@ if __name__ == "__main__":
             os.startfile(PROJECT_HOME)
         if event in items:
             item = items[event]
-            if item["action_type"] == "command":
-                subprocess.call([item["action"]])
-            if item["action_type"] in ("file", "url"):
-                try:
-                    os.startfile(item["action"])
-                except FileNotFoundError as fnfe:
-                    sg.popup_error("File could not be found: " + fnfe.filename)
-
+            if item['type'] == 'button':
+                if item["action_type"] == "command":
+                    subprocess.call([item["action"]])
+                if item["action_type"] in ("file", "url"):
+                    try:
+                        os.startfile(item["action"])
+                    except FileNotFoundError as fnfe:
+                        sg.popup_error("File could not be found: " + fnfe.filename)
+            if item['type'] == 'buttonmenu':
+                menu_name, menu_btn = values[event].split('::')
+                bm_items = item['items']
+                bm_item = bm_items[menu_btn]
+                if bm_item['type'] == 'button':
+                    if bm_item["action_type"] == "command":
+                        subprocess.call([bm_item["action"]])
+                    if bm_item["action_type"] in ("file", "url"):
+                        try:
+                            os.startfile(bm_item["action"])
+                        except FileNotFoundError as fnfe:
+                            sg.popup_error("File could not be found: " + fnfe.filename)
     window.close()
