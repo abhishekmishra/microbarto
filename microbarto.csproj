@@ -9,10 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="default-config.lua" />
     <None Remove="microbarto.lua" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="default-config.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="microbarto.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

@@ -1,17 +1,22 @@
 using NLua;
 using System.Reflection;
 using System.Text;
+using System.IO;
+using System.Diagnostics;
 
 namespace microbarto
 {
     public partial class Toolbar : Form
     {
         private List<ToolStripItem> toolStripItems;
-        Lua luaState;
+        Lua? luaState;
+        string? appConfigPath;
 
         public Toolbar()
         {
             InitializeComponent();
+
+            this.toolStripItems = new();
 
             Screen myScreen = Screen.FromControl(this);
             Rectangle area = myScreen.WorkingArea;
@@ -24,11 +29,17 @@ namespace microbarto
             this.BackColor = Color.Black;
             //button.ForeColor = Color.Green;
 
-            this.toolStripItems = new();
+            LoadConfig();
 
+            InitToolbarFromConfig();
+        }
+
+        private void InitToolbarFromConfig()
+        {
             luaState = new Lua();
             luaState.State.Encoding = Encoding.UTF8;
             luaState["mb"] = this;
+            luaState["microbarto"] = this;
             //luaState.RegisterFunction("print", typeof(MainWindow).GetMethod("print"));
             luaState.LoadCLRPackage();
             string? s = GetEmbeddedResource("microbarto", "microbarto.lua");
@@ -37,6 +48,35 @@ namespace microbarto
                 throw new Exception("Unable to load microbarto.lua. Terminating.");
             }
             luaState.DoString(s);
+
+            if (appConfigPath != null)
+            {
+                string mbCfg = File.ReadAllText(appConfigPath, Encoding.UTF8);
+                luaState.DoString(mbCfg);
+            }
+        }
+
+        private void LoadConfig()
+        {
+            string appConfigDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MicroBarto");
+            if (!Directory.Exists(appConfigDir))
+            {
+                Directory.CreateDirectory(appConfigDir);
+            }
+
+            appConfigPath = Path.Combine(appConfigDir, "mbconfig.lua");
+            //if (!File.Exists(appConfigPath))
+            //{
+            string? mbstr = GetEmbeddedResource("microbarto", "default-config.lua");
+            if (mbstr == null)
+            {
+                throw new Exception("Unable to load microbarto.lua. Terminating.");
+            }
+            File.WriteAllText(appConfigPath, mbstr, Encoding.UTF8);
+            //}
+
+            //MessageBox.Show(appConfigPath);
+            Debug.WriteLine("App config path = " + appConfigPath);
         }
 
         private void Toolbar_MouseLeave(object? sender, EventArgs e)
@@ -55,10 +95,29 @@ namespace microbarto
 
         private void Toolbar_Load(object sender, EventArgs e)
         {
-            AddToolButton("Close", ExitToolbar);
+            _AddToolButton("Close", ExitToolbar, ToolStripItemAlignment.Right);
         }
 
-        private void AddToolButton(string label, EventHandler eventHandler)
+        public void AddBtn(string label, LuaFunction callback)
+        {
+            EventHandler eh = delegate (object? sender, EventArgs e)
+            {
+                callback.Call(sender, e);
+            };
+
+            _AddToolButton(label, eh);
+        }
+
+        public void LaunchUrl(string url)
+        {
+            System.Diagnostics.Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+
+        private void _AddToolButton(string label, EventHandler eventHandler, ToolStripItemAlignment alignment = ToolStripItemAlignment.Left)
         {
             ToolStripButton button = new ToolStripButton();
             button.Text = label;
@@ -67,7 +126,7 @@ namespace microbarto
             button.ToolTipText = label;
             button.Click+=eventHandler;
             button.Margin = new System.Windows.Forms.Padding(2);
-            button.Alignment = ToolStripItemAlignment.Right;
+            button.Alignment = alignment;
             this.toolStripItems.Add(button);
             this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             button});
@@ -99,11 +158,21 @@ namespace microbarto
                         string result = reader.ReadToEnd();
                         return result;
                     }
-                } else
+                }
+                else
                 {
                     return null;
                 }
             }
         }
+
+        public void print(params object[] others)
+        {
+            foreach (object s in others)
+            {
+                Debug.WriteLine(s.ToString());
+            }
+        }
+
     }
 }
