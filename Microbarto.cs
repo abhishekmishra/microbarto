@@ -1,6 +1,6 @@
 namespace microbarto
 {
-    internal static class MicrobartoMain
+    internal static class Microbarto
     {
         /// <summary>
         ///  The main entry point for the application.

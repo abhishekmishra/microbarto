@@ -15,7 +15,7 @@ namespace microbarto
 
             Screen myScreen = Screen.FromControl(this);
             Rectangle area = myScreen.WorkingArea;
-            this.Size = new System.Drawing.Size(area.Width, 2);
+            this.Size = new System.Drawing.Size(area.Width, 1);
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(0, 0);
             this.mainToolStrip.MouseEnter +=Toolbar_MouseEnter;
@@ -38,7 +38,7 @@ namespace microbarto
         {
             Screen myScreen = Screen.FromControl(this);
             Rectangle area = myScreen.WorkingArea;
-            this.Size = new System.Drawing.Size(area.Width, 2);
+            this.Size = new System.Drawing.Size(area.Width, 1);
         }
 
         private void Toolbar_MouseEnter(object? sender, EventArgs e)
