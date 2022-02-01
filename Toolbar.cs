@@ -20,9 +20,14 @@ namespace microbarto
             this.Location = new Point(0, 0);
             this.mainToolStrip.MouseEnter +=Toolbar_MouseEnter;
             this.mainToolStrip.MouseLeave +=Toolbar_MouseLeave;
+            this.mainToolStrip.BackColor = Color.Black;
+            this.BackColor = Color.Black;
+            //button.ForeColor = Color.Green;
 
             this.toolStripItems = new();
+
             luaState = new Lua();
+            luaState.State.Encoding = Encoding.UTF8;
             luaState["mb"] = this;
             //luaState.RegisterFunction("print", typeof(MainWindow).GetMethod("print"));
             luaState.LoadCLRPackage();
@@ -57,10 +62,12 @@ namespace microbarto
         {
             ToolStripButton button = new ToolStripButton();
             button.Text = label;
-            button.BackColor = Color.Black;
-            button.ForeColor = Color.Green;
+            button.BackColor = Color.Red;
+            //button.ForeColor = Color.Green;
             button.ToolTipText = label;
             button.Click+=eventHandler;
+            button.Margin = new System.Windows.Forms.Padding(2);
+            button.Alignment = ToolStripItemAlignment.Right;
             this.toolStripItems.Add(button);
             this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             button});
