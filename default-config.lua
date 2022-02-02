@@ -28,3 +28,4 @@ AddBtn("Yahoo", function (sender, event)
 end)
 
 AddUrlBtn("Bing", "https://bing.com")
+AddProgramBtn("FM", "explorer.exe", "C:\\")

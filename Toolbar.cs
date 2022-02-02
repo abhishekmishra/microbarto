@@ -3,9 +3,22 @@ using System.Reflection;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace microbarto
 {
+
+    //see https://stackoverflow.com/a/2060360
+    public class NoBorderToolStripSystemRenderer : ToolStripSystemRenderer
+    {
+        public NoBorderToolStripSystemRenderer() { }
+
+        protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+        {
+            //base.OnRenderToolStripBorder(e);
+        }
+    }
+
     public partial class Toolbar : Form
     {
         private List<ToolStripItem> toolStripItems;
@@ -20,7 +33,9 @@ namespace microbarto
 
             Screen myScreen = Screen.FromControl(this);
             Rectangle area = myScreen.WorkingArea;
-            this.Size = new System.Drawing.Size(area.Width, 1);
+            this.Size = new Size(area.Width, 1);
+            this.mainToolStrip.Size = this.Size;
+            this.mainToolStrip.Renderer = new NoBorderToolStripSystemRenderer();
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(0, 0);
             this.mainToolStrip.MouseEnter +=Toolbar_MouseEnter;
@@ -114,6 +129,23 @@ namespace microbarto
             {
                 FileName = url,
                 UseShellExecute = true
+            });
+        }
+
+        public void LaunchProgram(string path, params string[] args)
+        {
+            StringBuilder sb = new();
+            foreach (string arg in args)
+            {
+                sb.Append(arg);
+                sb.Append(" ");
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                Arguments = sb.ToString(),
+                FileName=path,
+                UseShellExecute=true
             });
         }
 

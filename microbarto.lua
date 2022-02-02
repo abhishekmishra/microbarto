@@ -19,7 +19,8 @@ end
 
 local _mbobj_functions_names = {
     "AddBtn",
-    "LaunchUrl"
+    "LaunchUrl",
+    "LaunchProgram"
 }
 
 -- For each function in the function names list
@@ -32,5 +33,20 @@ end
 function AddUrlBtn(label, url)
     AddBtn(label, function (sender, event)
         LaunchUrl(url)
+    end)
+end
+
+--[[
+AddProgramBtn: create a button which launches a program.
+
+Params:
+    label: label of the button
+    app: path to the program to be launched
+    rest(varargs): arguments to be passed to the app (optional)
+--]]
+function AddProgramBtn(label, app, ...)
+    local f_args = {...}
+    AddBtn(label, function (sender, event)
+        LaunchProgram(app, table.unpack(f_args))
     end)
 end

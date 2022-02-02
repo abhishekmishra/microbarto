@@ -33,12 +33,16 @@
             // 
             // mainToolStrip
             // 
+            this.mainToolStrip.AutoSize = false;
+            this.mainToolStrip.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.mainToolStrip.CanOverflow = false;
+            this.mainToolStrip.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainToolStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
             this.mainToolStrip.Name = "mainToolStrip";
             this.mainToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.mainToolStrip.Size = new System.Drawing.Size(800, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(600, 25);
             this.mainToolStrip.TabIndex = 0;
             this.mainToolStrip.Text = "mainToolStrip";
             // 
@@ -47,7 +51,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(800, 25);
+            this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.ClientSize = new System.Drawing.Size(600, 25);
             this.ControlBox = false;
             this.Controls.Add(this.mainToolStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -61,7 +66,6 @@
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Toolbar_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
