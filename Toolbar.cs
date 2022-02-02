@@ -8,17 +8,6 @@ using System.Drawing;
 namespace microbarto
 {
 
-    //see https://stackoverflow.com/a/2060360
-    public class NoBorderToolStripSystemRenderer : ToolStripSystemRenderer
-    {
-        public NoBorderToolStripSystemRenderer() { }
-
-        protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
-        {
-            //base.OnRenderToolStripBorder(e);
-        }
-    }
-
     public partial class Toolbar : Form
     {
         private List<ToolStripItem> toolStripItems;
@@ -207,4 +196,17 @@ namespace microbarto
         }
 
     }
+
+    //see https://stackoverflow.com/a/2060360
+    public class NoBorderToolStripSystemRenderer : ToolStripSystemRenderer
+    {
+        public NoBorderToolStripSystemRenderer() { }
+
+        protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+        {
+            //base.OnRenderToolStripBorder(e);
+        }
+    }
+
+
 }
