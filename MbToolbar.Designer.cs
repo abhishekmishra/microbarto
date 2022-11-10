@@ -1,6 +1,6 @@
 ﻿namespace microbarto
 {
-    partial class Toolbar
+    partial class MbToolbar
     {
         /// <summary>
         ///  Required designer variable.

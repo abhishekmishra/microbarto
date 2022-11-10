@@ -8,7 +8,7 @@ using System.Drawing;
 namespace microbarto
 {
 
-    public partial class Toolbar : Form
+    public partial class MbToolbar : Form
     {
         private List<ToolStripItem> toolStripItems;
         Lua? luaState;
@@ -26,7 +26,7 @@ namespace microbarto
         Pen buttonHoverBorderPen;
         int buttonMargin = 0;
 
-        public Toolbar()
+        public MbToolbar()
         {
             InitializeComponent();
 
