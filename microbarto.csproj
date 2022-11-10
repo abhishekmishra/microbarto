@@ -6,11 +6,16 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>microbarto.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="default-config.lua" />
     <None Remove="microbarto.lua" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="microbarto.ico" />
   </ItemGroup>
 
   <ItemGroup>
