@@ -14,30 +14,65 @@ namespace microbarto
         Lua? luaState;
         string? appConfigPath;
 
+        // Default visual configuration
+        int toolbarHeight = 32;
+        Color toolbarBgColor = Color.FromArgb(0x88, 0x88, 0x88);
+        Color buttonBgColor = Color.FromArgb(0x22, 0x22, 0x22);
+        Color buttonFgColor = Color.FromArgb(0xdd, 0xdd, 0xdd);
+        Color buttonHoverBgColor = Color.FromArgb(0x44, 0x44, 0x44);
+        Color buttonHoverBorderColor = Color.FromArgb(0xaa, 0xaa, 0xaa);
+        Brush buttonHoverBgBrush;
+        Brush buttonHoverBorderBrush;
+        Pen buttonHoverBorderPen;
+        int buttonMargin = 0;
+
         public Toolbar()
         {
             InitializeComponent();
 
             this.toolStripItems = new();
 
+            buttonHoverBgBrush = new SolidBrush(buttonHoverBgColor);
+            buttonHoverBorderBrush = new SolidBrush(buttonHoverBorderColor);
+            buttonHoverBorderPen = new Pen(buttonHoverBorderBrush);
+
             Screen myScreen = Screen.FromControl(this);
             Rectangle area = myScreen.WorkingArea;
             this.Size = new Size(area.Width, 1);
             this.mainToolStrip.Size = this.Size;
-            this.mainToolStrip.Renderer = new NoBorderToolStripSystemRenderer();
+            NoBorderToolStripSystemRenderer toolStripRenderer = new NoBorderToolStripSystemRenderer();
+            toolStripRenderer.buttonHoverBgBrush = buttonHoverBgBrush;
+            toolStripRenderer.buttonHoverBorderBrush = buttonHoverBorderBrush;
+            toolStripRenderer.buttonHoverBorderPen = buttonHoverBorderPen;
+            this.mainToolStrip.Renderer = toolStripRenderer;
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(0, 0);
             this.mainToolStrip.MouseEnter +=Toolbar_MouseEnter;
             this.mainToolStrip.MouseLeave +=Toolbar_MouseLeave;
-            this.mainToolStrip.BackColor = Color.Black;
-            this.BackColor = Color.Black;
-            //button.ForeColor = Color.Green;
+            this.mainToolStrip.BackColor = toolbarBgColor;
 
-            LoadConfig();
+            // This setting is immaterial - the form cannot be seen,
+            // only the mainToolStrip is visible
+            this.BackColor = Color.White;
+
+            InitAppConfig();
 
             InitToolbarFromConfig();
         }
 
+        //TODO: create an exception class for Microbarto exceptions
+        //TODO: subclass it for lua or config exceptions.
+
+        /// <summary>
+        /// 1. Initializes lua - creates a new luaState object.
+        /// 2. Loads the clr package for interop with dotnet
+        /// 3. Loads the embedded resource "microbarto.lua" which
+        ///     defines some key lua functions to configure the toolbar.
+        /// 4. Finally applies the user configuration for the toolbar.
+        /// </summary>
+        /// <exception cref="Exception">
+        /// If unable to load embedded resource microbarto.lua
+        /// </exception>
         private void InitToolbarFromConfig()
         {
             luaState = new Lua();
@@ -60,7 +95,7 @@ namespace microbarto
             }
         }
 
-        private void LoadConfig()
+        private void InitAppConfig()
         {
             string appConfigDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MicroBarto");
             if (!Directory.Exists(appConfigDir))
@@ -69,15 +104,15 @@ namespace microbarto
             }
 
             appConfigPath = Path.Combine(appConfigDir, "mbconfig.lua");
-            //if (!File.Exists(appConfigPath))
-            //{
-            string? mbstr = GetEmbeddedResource("microbarto", "default-config.lua");
-            if (mbstr == null)
+            if (!File.Exists(appConfigPath))
             {
-                throw new Exception("Unable to load microbarto.lua. Terminating.");
+                string? mbstr = GetEmbeddedResource("microbarto", "default-config.lua");
+                if (mbstr == null)
+                {
+                    throw new Exception("Unable to load microbarto.lua. Terminating.");
+                }
+                File.WriteAllText(appConfigPath, mbstr, Encoding.UTF8);
             }
-            File.WriteAllText(appConfigPath, mbstr, Encoding.UTF8);
-            //}
 
             //MessageBox.Show(appConfigPath);
             Debug.WriteLine("App config path = " + appConfigPath);
@@ -94,7 +129,7 @@ namespace microbarto
         {
             Screen myScreen = Screen.FromControl(this);
             Rectangle area = myScreen.WorkingArea;
-            this.Size = new System.Drawing.Size(area.Width, 25);
+            this.Size = new System.Drawing.Size(area.Width, toolbarHeight);
         }
 
         private void Toolbar_Load(object sender, EventArgs e)
@@ -141,12 +176,18 @@ namespace microbarto
         private void _AddToolButton(string label, EventHandler eventHandler, ToolStripItemAlignment alignment = ToolStripItemAlignment.Left)
         {
             ToolStripButton button = new ToolStripButton();
+            button.AutoSize= true;
+            button.Width = 150;
             button.Text = label;
-            button.BackColor = Color.Red;
-            //button.ForeColor = Color.Green;
+
+            button.BackColor = buttonBgColor;
+            button.ForeColor = buttonFgColor;
+
             button.ToolTipText = label;
             button.Click+=eventHandler;
-            button.Margin = new System.Windows.Forms.Padding(2);
+            button.Margin = new System.Windows.Forms.Padding(buttonMargin);
+            button.Padding = new System.Windows.Forms.Padding(buttonMargin);
+
             button.Alignment = alignment;
             this.toolStripItems.Add(button);
             this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -200,11 +241,36 @@ namespace microbarto
     //see https://stackoverflow.com/a/2060360
     public class NoBorderToolStripSystemRenderer : ToolStripSystemRenderer
     {
-        public NoBorderToolStripSystemRenderer() { }
+        public Brush buttonHoverBgBrush;
+        public Brush buttonHoverBorderBrush;
+        public Pen buttonHoverBorderPen;
+
+        public NoBorderToolStripSystemRenderer()
+        {
+            buttonHoverBgBrush = Brushes.AliceBlue;
+            buttonHoverBorderBrush = Brushes.Black;
+            buttonHoverBorderPen = new Pen(buttonHoverBorderBrush);
+        }
 
         protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
         {
             //base.OnRenderToolStripBorder(e);
+        }
+
+        // for overriding hover border on toolstrip button
+        // see https://stackoverflow.com/a/29169459/9483968
+        protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
+        {
+            if (!e.Item.Selected)
+            {
+                base.OnRenderButtonBackground(e);
+            }
+            else
+            {
+                Rectangle rectangle = new Rectangle(0, 0, e.Item.Size.Width - 1, e.Item.Size.Height - 1);
+                e.Graphics.FillRectangle(buttonHoverBgBrush, rectangle);
+                e.Graphics.DrawRectangle(buttonHoverBorderPen, rectangle);
+            }
         }
     }
 
