@@ -17,14 +17,6 @@ namespace microbarto
         // Default visual configuration
         int toolbarHeight = 32;
         Color toolbarBgColor = Color.FromArgb(0x88, 0x88, 0x88);
-        Color buttonBgColor = Color.FromArgb(0x22, 0x22, 0x22);
-        Color buttonFgColor = Color.FromArgb(0xdd, 0xdd, 0xdd);
-        Color buttonHoverBgColor = Color.FromArgb(0x44, 0x44, 0x44);
-        Color buttonHoverBorderColor = Color.FromArgb(0xaa, 0xaa, 0xaa);
-        Brush buttonHoverBgBrush;
-        Brush buttonHoverBorderBrush;
-        Pen buttonHoverBorderPen;
-        int buttonMargin = 0;
 
         public MbToolbar()
         {
@@ -32,18 +24,11 @@ namespace microbarto
 
             this.toolStripItems = new();
 
-            buttonHoverBgBrush = new SolidBrush(buttonHoverBgColor);
-            buttonHoverBorderBrush = new SolidBrush(buttonHoverBorderColor);
-            buttonHoverBorderPen = new Pen(buttonHoverBorderBrush);
-
             Screen myScreen = Screen.FromControl(this);
             Rectangle area = myScreen.WorkingArea;
             this.Size = new Size(area.Width, 1);
             this.mainToolStrip.Size = this.Size;
             NoBorderToolStripSystemRenderer toolStripRenderer = new NoBorderToolStripSystemRenderer();
-            toolStripRenderer.buttonHoverBgBrush = buttonHoverBgBrush;
-            toolStripRenderer.buttonHoverBorderBrush = buttonHoverBorderBrush;
-            toolStripRenderer.buttonHoverBorderPen = buttonHoverBorderPen;
             this.mainToolStrip.Renderer = toolStripRenderer;
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(0, 0);
@@ -175,18 +160,13 @@ namespace microbarto
 
         private void _AddToolButton(string label, EventHandler eventHandler, ToolStripItemAlignment alignment = ToolStripItemAlignment.Left)
         {
-            ToolStripButton button = new ToolStripButton();
+            MbToolbarButton button = new MbToolbarButton();
             button.AutoSize= true;
             button.Width = 150;
             button.Text = label;
 
-            button.BackColor = buttonBgColor;
-            button.ForeColor = buttonFgColor;
-
             button.ToolTipText = label;
             button.Click+=eventHandler;
-            button.Margin = new System.Windows.Forms.Padding(buttonMargin);
-            button.Padding = new System.Windows.Forms.Padding(buttonMargin);
 
             button.Alignment = alignment;
             this.toolStripItems.Add(button);
@@ -241,15 +221,8 @@ namespace microbarto
     //see https://stackoverflow.com/a/2060360
     public class NoBorderToolStripSystemRenderer : ToolStripSystemRenderer
     {
-        public Brush buttonHoverBgBrush;
-        public Brush buttonHoverBorderBrush;
-        public Pen buttonHoverBorderPen;
-
         public NoBorderToolStripSystemRenderer()
         {
-            buttonHoverBgBrush = Brushes.AliceBlue;
-            buttonHoverBorderBrush = Brushes.Black;
-            buttonHoverBorderPen = new Pen(buttonHoverBorderBrush);
         }
 
         protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
@@ -261,15 +234,23 @@ namespace microbarto
         // see https://stackoverflow.com/a/29169459/9483968
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
         {
-            if (!e.Item.Selected)
+            if (e.Item is MbToolbarButton)
             {
-                base.OnRenderButtonBackground(e);
+                MbToolbarButton btn = (MbToolbarButton)e.Item;
+                if (!e.Item.Selected)
+                {
+                    base.OnRenderButtonBackground(e);
+                }
+                else
+                {
+                    Rectangle rectangle = new Rectangle(0, 0, e.Item.Size.Width - 1, e.Item.Size.Height - 1);
+                    e.Graphics.FillRectangle(btn.ButtonHoverBgBrush, rectangle);
+                    e.Graphics.DrawRectangle(btn.ButtonHoverBorderPen, rectangle);
+                }
             }
             else
             {
-                Rectangle rectangle = new Rectangle(0, 0, e.Item.Size.Width - 1, e.Item.Size.Height - 1);
-                e.Graphics.FillRectangle(buttonHoverBgBrush, rectangle);
-                e.Graphics.DrawRectangle(buttonHoverBorderPen, rectangle);
+                base.OnRenderButtonBackground(e);
             }
         }
     }
