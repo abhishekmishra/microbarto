@@ -72,5 +72,23 @@
         #endregion
 
         private ToolStrip mainToolStrip;
+
+        /// <summary>
+        /// This removes the program from the Alt-Tab
+        /// window switcher listing.
+        /// 
+        /// See https://stackoverflow.com/a/27573452/9483968
+        /// </summary>
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                // turn on WS_EX_TOOLWINDOW style bit
+                cp.ExStyle |= 0x80;
+                return cp;
+            }
+        }
+
     }
 }
