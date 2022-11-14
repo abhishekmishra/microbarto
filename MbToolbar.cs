@@ -216,6 +216,12 @@ namespace microbarto
             }
         }
 
+        private void configMenuItem_Click(object sender, EventArgs e)
+        {
+            string appConfigDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MicroBarto");
+            string appConfigPath = Path.Combine(appConfigDir, "mbconfig.lua");
+            _=Process.Start("notepad.exe", appConfigPath);
+        }
     }
 
     //see https://stackoverflow.com/a/2060360
