@@ -32,6 +32,7 @@
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.configMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutMicrobartoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,9 +55,10 @@
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.configMenuItem});
+            this.configMenuItem,
+            this.aboutMicrobartoToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStrip.Size = new System.Drawing.Size(181, 70);
             // 
             // configMenuItem
             // 
@@ -64,6 +66,13 @@
             this.configMenuItem.Size = new System.Drawing.Size(180, 22);
             this.configMenuItem.Text = "Config File";
             this.configMenuItem.Click += new System.EventHandler(this.configMenuItem_Click);
+            // 
+            // aboutMicrobartoToolStripMenuItem
+            // 
+            this.aboutMicrobartoToolStripMenuItem.Name = "aboutMicrobartoToolStripMenuItem";
+            this.aboutMicrobartoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutMicrobartoToolStripMenuItem.Text = "About Microbarto";
+            this.aboutMicrobartoToolStripMenuItem.Click += new System.EventHandler(this.aboutMicrobartoToolStripMenuItem_Click);
             // 
             // MbToolbar
             // 
@@ -94,6 +103,7 @@
         private ToolStrip mainToolStrip;
         private ContextMenuStrip contextMenuStrip;
         private ToolStripMenuItem configMenuItem;
+        private ToolStripMenuItem aboutMicrobartoToolStripMenuItem;
 
         /// <summary>
         /// This removes the program from the Alt-Tab

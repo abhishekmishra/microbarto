@@ -222,6 +222,12 @@ namespace microbarto
             string appConfigPath = Path.Combine(appConfigDir, "mbconfig.lua");
             _=Process.Start("notepad.exe", appConfigPath);
         }
+
+        private void aboutMicrobartoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MbAboutBox mbAboutBox = new MbAboutBox();
+            mbAboutBox.ShowDialog();
+        }
     }
 
     //see https://stackoverflow.com/a/2060360
